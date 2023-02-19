@@ -1,4 +1,4 @@
-modules.export = (sequelize, DataTypes) => {
+module.exports = (sequelize, DataTypes) => {
   const Image = sequelize.define(
     "Image",
     {
@@ -14,7 +14,7 @@ modules.export = (sequelize, DataTypes) => {
     }
   );
   Image.associate = (db) => {
-    db.Image.belongsTo(db.Post);
+    db.Image.belongsTo(db.Post); // 이미지는 소유한 게시글이 정해져 있다 게시글 1: 이미지 다(여러개)
   };
 
   return Image;
