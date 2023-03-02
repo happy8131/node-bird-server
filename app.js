@@ -21,7 +21,8 @@ passportConfig();
 
 app.use(
   cors({
-    origin: "*",
+    origin: "http://localhost:3000",
+    credentials: true,
   })
 ); // cors 설정해준다
 app.use(express.json());

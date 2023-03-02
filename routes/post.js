@@ -1,5 +1,5 @@
 const exporess = require("express");
-const { Post } = require("../models");
+const { Post, Comment, User } = require("../models");
 const { isLoggedIn } = require("./middlewares");
 
 const router = exporess.Router();
@@ -10,7 +10,21 @@ router.post("/", isLoggedIn, async (req, res, next) => {
       content: req.body.content,
       UserId: req.user.id,
     });
-    res.status(201).json(post);
+    const fullPost = await Post.finOne({
+      where: { id: post.id },
+      include: [
+        {
+          model: Image,
+        },
+        {
+          model: Comment,
+        },
+        {
+          model: User,
+        },
+      ],
+    });
+    res.status(201).json(fullPost);
   } catch (err) {
     console.log(err);
     next(err);
