@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     db.Post.belongsToMany(db.Hashtag, { through: "PostHashtag" });
     db.Post.hasMany(db.Comment);
     db.Post.hasMany(db.Image); //하나의 게시글은 여러개 이미지 가질 수 있다
-    db.Post.belongsToMany(db.User, { through: "Like", as: "likers" });
+    db.Post.belongsToMany(db.User, { through: "Like", as: "Likers" });
     db.Post.belongsTo(db.Post, { as: "Retweet" });
   };
 
