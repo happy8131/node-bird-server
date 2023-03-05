@@ -1,5 +1,5 @@
 const exporess = require("express");
-const { Post, Comment, User } = require("../models");
+const { Post, Comment, User, Image } = require("../models");
 const { isLoggedIn } = require("./middlewares");
 
 const router = exporess.Router();
@@ -10,7 +10,7 @@ router.post("/", isLoggedIn, async (req, res, next) => {
       content: req.body.content,
       UserId: req.user.id,
     });
-    const fullPost = await Post.finOne({
+    const fullPost = await Post.findOne({
       where: { id: post.id },
       include: [
         {
@@ -26,7 +26,7 @@ router.post("/", isLoggedIn, async (req, res, next) => {
         },
         {
           model: User, // 좋아요 누른사람
-          as: "likers",
+          as: "Likers",
           attributes: ["id"],
         },
       ],
@@ -63,7 +63,7 @@ router.post("/:postId/comment", isLoggedIn, async (req, res, next) => {
   }
 });
 
-router.patch("/:postId/like", async (req, res, next) => {
+router.patch("/:postId/like", isLoggedIn, async (req, res, next) => {
   try {
     const post = await Post.findOne({ where: { id: req.params.postId } });
     if (!post) {
@@ -77,7 +77,7 @@ router.patch("/:postId/like", async (req, res, next) => {
   }
 });
 
-router.delete("/:postId/like", async (req, res, next) => {
+router.delete("/:postId/like", isLoggedIn, async (req, res, next) => {
   try {
     const post = await Post.findOne({ where: { id: req.params.postId } });
     if (!post) {
@@ -87,11 +87,20 @@ router.delete("/:postId/like", async (req, res, next) => {
     res.json({ PostId: post.id, UserId: req.user.id });
   } catch (err) {
     console.log(err);
+    next(err);
   }
 });
 
-router.delete("/", (req, res) => {
-  res.json({ id: 1 });
+router.delete("/:postId", isLoggedIn, async (req, res, next) => {
+  try {
+    await Post.destroy({
+      where: { id: req.params.postId, UserId: req.user.id },
+    });
+    res.status(200).json({ PostId: parseInt(req.params.postId, 10) });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
 });
 
 module.exports = router;
