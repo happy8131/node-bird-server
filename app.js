@@ -9,6 +9,7 @@ const postsRouter = require("./routes/posts");
 const userRouter = require("./routes/user");
 const db = require("./models");
 const passportConfig = require("./passport");
+const path = require("path");
 const morgan = require("morgan");
 
 dotenv.config();
@@ -28,6 +29,8 @@ app.use(
     credentials: true,
   })
 ); // cors 설정해준다
+
+app.use("/", express.static(path.join(__dirname, "uploads")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // 프론트에서 넘어온 데이터를 req.body넣어주는 역할을 해준다
 app.use(cookieParser());
